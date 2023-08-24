@@ -1,5 +1,4 @@
 # latihan_flutter_rafly
-<<<<<<< HEAD
 
 A new Flutter project.
 
@@ -16,5 +15,4 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 =======
-projrct latihan per fitur or per screen 
->>>>>>> e5d0a758b475e57963074c843feb798d00c43509
+project latihan per fitur or per screen 
