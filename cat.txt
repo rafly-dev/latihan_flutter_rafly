@@ -1,0 +1,21 @@
+git config --global user.name "Your GitHub Username"
+git config --global user.email "Your GitHub Email"
+ls ~/.ssh
+ssh-keygen -t ed25519 -C "your_email@example.com"
+Get-Content C:\Users\userq\.ssh\id_ed25519.pub
+git remote set-url origin git@github.com:rafly-dev/latihan_flutter_rafly.git
+
+SHA256:29wAvN3HKZ3aicCLWje1divZCY70S1h1s/GgbTCeXYY raflydevelop@gmail.com
+The key's randomart image is:
++--[ED25519 256]--+
+|                 |
+|       .       . |
+|        o   o Eo+|
+|         = o @ B=|
+|        S = O X..|
+|         =.O.O . |
+|        +.B+B++. |
+|       o ..+=.o. |
+|      .     .o.  |
++----[SHA256]-----+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII/GsrxCKC3j7PBPK37GxaHJPU5AcoFqPNoH35grjEJt raflydevelop@gmail.com
