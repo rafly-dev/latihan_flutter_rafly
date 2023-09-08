@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "com.rya" "\0"
             VALUE "FileDescription", "latihan_flutter_rafly" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "latihan_flutter_rafly" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 com.rya. All rights reserved." "\0"
             VALUE "OriginalFilename", "latihan_flutter_rafly.exe" "\0"
             VALUE "ProductName", "latihan_flutter_rafly" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

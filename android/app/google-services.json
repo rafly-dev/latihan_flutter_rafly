@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "34806201471",
+    "project_id": "latihanflutterrafly",
+    "storage_bucket": "latihanflutterrafly.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34806201471:android:0c79400e24f4a02b7f534a",
+        "android_client_info": {
+          "package_name": "com.rya.latihan_flutter_rafly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "34806201471-l9fhh8vpgkljqau21is1h0vk54l06enr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rya.latihan_flutter_rafly",
+            "certificate_hash": "62b77e0617f2990685d51b8787c06576aeee38ae"
+          }
+        },
+        {
+          "client_id": "34806201471-0fa32us7joih909io846jkhu8heuoot3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDvJlYO0klnftq_HOjj-07_t4U2xRcC28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "34806201471-0fa32us7joih909io846jkhu8heuoot3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Fitur1 extends StatefulWidget {
@@ -27,7 +27,7 @@ class _Fitur1State extends State<Fitur1> {
 
   loadCamera() async {
     cameras = await availableCameras();
-    if(cameras != null){
+    if (cameras != null) {
       controller = CameraController(cameras![0], ResolutionPreset.max);
       //cameras[0] = first camera, change to 1 to another camera
 
@@ -37,12 +37,10 @@ class _Fitur1State extends State<Fitur1> {
         }
         setState(() {});
       });
-    }else{
+    } else {
       print("NO any camera found");
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,52 +50,75 @@ class _Fitur1State extends State<Fitur1> {
         backgroundColor: Colors.redAccent,
       ),
       body: Container(
-          child: Column(
-              children:[
-                Container(
-                    height:300,
-                    width:400,
-                    child: controller == null?
-                    Center(child:Text("Loading Camera...")):
-                    !controller!.value.isInitialized?
-                    Center(
-                      child: CircularProgressIndicator(),
-                    ):
-                    CameraPreview(controller!)
-                ),
-
-                ElevatedButton.icon( //image capture button
-                  onPressed: () async{
-                    try {
-                      if(controller != null){ //check if contrller is not null
-                        if(controller!.value.isInitialized){ //check if controller is initialized
-                          image = await controller!.takePicture(); //capture image
-                          setState(() {
-                            //update UI
-                          });
-                        }
-                      }
-                    } catch (e) {
-                      print(e); //show error
-                    }
-                  },
-                  icon: Icon(Icons.camera),
-                  label: Text("Capture"),
-                ),
-
-                Container( //show captured image
-                  padding: EdgeInsets.all(30),
-                  child: image == null?
-                  Text("No image captured"):
-                  Image.file(File(image!.path), height: 300,),
-                  //display captured image
-                )
-              ]
-          )
-      ),
-
+          child: Column(children: [
+        Container(
+            height: 600,
+            width: 400,
+            child: controller == null
+                ? Center(child: Text("Loading Camera..."))
+                : !controller!.value.isInitialized
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : CameraPreview(controller!)),
+        ElevatedButton.icon(
+          //image capture button
+          onPressed: () async {
+            try {
+              if (controller != null) {
+                //check if contrller is not null
+                if (controller!.value.isInitialized) {
+                  //check if controller is initialized
+                  image = await controller!.takePicture(); //capture image
+                  setState(() {
+                    //update UI
+                    Get.dialog(AlertDialog(
+                      content: Image.file(
+                        File(image!.path),
+                        height: 300,
+                      ),
+                    ));
+                  });
+                }
+              }
+            } catch (e) {
+              print(e); //show error
+            }
+          },
+          icon: Icon(Icons.camera),
+          label: Text("Capture"),
+        ),
+        // Container(
+        //   //show captured image
+        //   padding: EdgeInsets.all(30),
+        //   child: image == null
+        //       ? Text("No image captured")
+        //       : Image.file(
+        //           File(image!.path),
+        //           height: 300,
+        //         ),
+        //   //display captured image
+        // )
+      ])),
     );
-
   }
 
+  @override
+  void deactivate() {
+    if (controller!.value.isStreamingImages) {
+      controller?.stopImageStream(); // Stop camera preview
+    }
+    print('deactivate fitur_1');
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    // Dispose the camera controller only if it's not streaming images
+    if (!controller!.value.isStreamingImages) {
+      controller?.dispose();
+    }
+    print('disposed fitur_1');
+    super.dispose();
+  }
 }
