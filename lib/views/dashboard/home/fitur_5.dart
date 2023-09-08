@@ -24,22 +24,10 @@ class Fitur5 extends StatefulWidget {
 }
 
 class _Fitur5State extends State<Fitur5> {
-  FirebaseNotificationHandler firebaseNotificationHandler =
-      FirebaseNotificationHandler();
+  FirebaseNotificationHandler firebaseNotificationHandler = FirebaseNotificationHandler();
 
   @override
   void initState() {
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    //   print("onMessage: $message.data");
-    //   // Handle the notification when the app is in the foreground
-    //   showNotification(message.data);
-    // });
-    //
-    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-    //   print("onMessageOpenedApp: $message.data");
-    //   // Handle the notification when the app is opened from a background state
-    //   // You can navigate to a specific screen here
-    // });
 
     super.initState();
   }
@@ -71,6 +59,7 @@ class _Fitur5State extends State<Fitur5> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments ?? 'No data';
     return Scaffold(
       appBar: AppBar(
         title: Text("Firebasse Cloud Messaging FCM Push Notifications"),
@@ -133,4 +122,3 @@ class _Fitur5State extends State<Fitur5> {
     super.dispose();
   }
 }
-

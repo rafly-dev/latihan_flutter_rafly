@@ -21,9 +21,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen(BuildContext context, {Key? key}) : super(key: key);
-  static final String routename = "/homeScreen";
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -33,10 +30,35 @@ class _HomeScreenState extends State<HomeScreen> {
   late int _totalNotifications;
   PushNotification? _notificationInfo;
 
+  // In this example, suppose that all messages contain a data field with the key 'type'.
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    if (message.data['type'] == 'chat') {
+      Navigator.pushNamed(context, '/chat',
+        arguments: Fitur5_1(payload: '', info: 'null', yourId: 0,),
+      );
+    }
+  }
+
   void registerNotification() async {
     await Firebase.initializeApp();
     _messaging = FirebaseMessaging.instance;
-
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     NotificationSettings settings = await _messaging.requestPermission(
@@ -51,8 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         print(
-            'Message title: ${message.notification?.title}, body: ${message
-                .notification?.body}, data: ${message.data}');
+            'Message title: ${message.notification?.title}, body: ${message.notification?.body}, data: ${message.data}');
 
         // Parse the message received
         PushNotification notification = PushNotification(
@@ -87,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
   checkForInitialMessage() async {
     await Firebase.initializeApp();
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       PushNotification notification = PushNotification(
@@ -104,11 +125,60 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<String?> getFCMToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    return fcmToken;
+  }
+
+  initFcm() async {
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
+
+  @pragma('vm:entry-point')
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    // If you're going to use other Firebase services in the background, such as Firestore,
+    // make sure you call `initializeApp` before using other Firebase services.
+    await Firebase.initializeApp();
+
+    print("Handling a background message: ${message.messageId}");
+  }
+
   @override
   void initState() {
     _totalNotifications = 0;
     registerNotification();
     checkForInitialMessage();
+
+    initFcm();
+
+    print("FCM Token $getFCMToken()");
+
+    FirebaseMessaging.instance.onTokenRefresh
+        .listen((fcmToken) {
+      // TODO: If necessary send token to application server.
+    print(fcmToken);
+      // Note: This callback is fired at each app startup and whenever a new
+      // token is generated.
+    })
+        .onError((err) {
+    print(err);
+      // Error getting token.
+    });
+
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       PushNotification notification = PushNotification(
         title: message.notification?.title,
@@ -123,27 +193,22 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
 
-    /*FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("onMessage: $message");
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      print("onMessageOpenedApp: $message");
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
 
-      if (message.data["navigation"] == "/fitur5_1") {
-        int _yourId = int.tryParse(message.data["id"]) ?? 0;
-        // Navigator.push(
-            // navigatorKey.currentState!.context,
-            // MaterialPageRoute(
-            //     builder: (context) => Fitur5_1(
-            //           yourId: _yourId,
-            //           payload: '',
-            //           info: null,
-            //         )));
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
       }
-    });*/
+    });
+
     super.initState();
+
+    setupInteractedMessage();
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-// Widget HomeScreen(BuildContext context) {}
+
 class NotificationBadge extends StatelessWidget {
   final int totalNotifications;
 

@@ -7,82 +7,48 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:latihan_flutter_rafly/providers/BaseProvider.dart';
 import 'package:latihan_flutter_rafly/providers/DashboardProvider.dart';
+import 'package:latihan_flutter_rafly/views/dashboard/dashboard_screen.dart';
+import 'package:latihan_flutter_rafly/views/dashboard/home/fitur_5.dart';
 import 'package:latihan_flutter_rafly/views/splash_screen.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'helpers/AppLogger.dart';
+import 'services/push_notifications_service.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
+  await PushNotificationService.initializeApp();
+
   runApp(MyApp());
 }
 
-/*
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-void initialize() {
-  FirebaseMessaging.instance.requestPermission();
-  // FirebaseMessaging.instance.getToken().then(
-  //       (deviceToken) {
-  //     if (deviceToken != null) {
-  //       _setDeviceTokenUseCase.execute(deviceToken);
-  //       AppLogger.log('Device Token: $deviceToken');
-  //     }
-  //   },
-  // );
-  FirebaseMessaging.onMessage.listen((message) {
-    AppLogger.log('Message data: ${message.data}');
-  });
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    AppLogger.log('Message data: ${message.data}');
-  });
-  FirebaseMessaging.onBackgroundMessage((message) async {
-    AppLogger.log('Message data: ${message.data}');
-  });
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
 }
 
-Future<void> selectNotification(String payload) async {
-  if (payload != null) {
-    // Handle notifikasi sesuai dengan payload
-    // Contoh: Navigasi ke halaman notifikasi
-    print("Payload notifikasi: $payload");
-    // Navigasi ke halaman notifikasi
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => NotificationPage(payload: payload)),
-    // );
+class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> navigatorKey =
+      new GlobalKey<NavigatorState>();
+
+  final GlobalKey<ScaffoldMessengerState> messengerKey =
+      new GlobalKey<ScaffoldMessengerState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Context!
+    PushNotificationService.messagesStream.listen((message) {
+      // print('MyApp: $message');
+      navigatorKey.currentState?.pushNamed('message', arguments: message);
+
+      final snackBar = SnackBar(content: Text(message));
+      messengerKey.currentState?.showSnackBar(snackBar);
+    });
   }
-}
 
-void showNotification(RemoteMessage message) async {
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
-      AndroidNotificationDetails(
-    'your_channel_id', // ID kanal notifikasi Anda
-    'Your Channel Name', // Nama kanal notifikasi Anda
-    // 'Your Channel Description', // Deskripsi kanal notifikasi Anda
-    importance: Importance.max,
-    priority: Priority.high,
-  );
-
-  const NotificationDetails platformChannelSpecifics =
-      NotificationDetails(android: androidPlatformChannelSpecifics);
-
-  await flutterLocalNotificationsPlugin.show(
-    0, // ID notifikasi
-    message.notification!.title, // Judul notifikasi
-    message.notification!.body, // Isi notifikasi
-    platformChannelSpecifics,
-    payload: message.data['data'], // Payload notifikasi
-  );
-}*/
-
-class MyApp extends StatelessWidget {
-  // const MyApp({super.key});
-
-  final String? payload;
-
-  const MyApp({Key? key, this.payload}) : super(key: key);
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -91,16 +57,22 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => BaseProvider()),
         ChangeNotifierProvider(create: (context) => DashboardProvider()),
       ],
-      child: GetMaterialApp(
-        // navigatorKey: navigatorKey,
+      child: OverlaySupport(
+          child: GetMaterialApp(
         title: 'Latihan Flutter Rafly',
         debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
+        scaffoldMessengerKey: messengerKey,
+        routes: {
+          'home': (_) => DashboardScreen(),
+          'message': (_) => Fitur5(),
+        },
         theme: ThemeData(
             primarySwatch: Colors.blue,
             textTheme: GoogleFonts.poppinsTextTheme(textTheme)),
         home: SplashScreen(),
         // initialRoute: initialRoute,
-      ),
+      )),
     );
   }
 }

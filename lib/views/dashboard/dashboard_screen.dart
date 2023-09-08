@@ -52,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: IndexedStack(
               index: currentPageIndex,
               children: [
-                HomeScreen(context),
+                HomeScreen(),
                 NotificationScreen(context),
                 ProfileScreen(context),
               ],

@@ -40,11 +40,7 @@ class FirebaseNotificationHandler {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (cntxt) => Fitur5_1(
-                  info: message.data['msg'],
-                  payload: '',
-                  yourId: 0,
-                ),
+                builder: (cntxt) => Fitur5_1(payload: 'null', info: 'null', yourId: 0,),
               ),
             );
           }
@@ -186,7 +182,6 @@ class FirebaseNotificationHandler {
   }
 }
 
-//? Top label function
 Future<void> firebaseMessingBackgroundHandler(RemoteMessage message) async {
   log('Top Label Function. ---- (onBackgroundMessage) ----');
   log('Message Data: ${message.data}');
